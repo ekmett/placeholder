@@ -5,6 +5,7 @@
 {-# LANGUAGE MagicHash #-}
 {-# LANGUAGE RankNTypes #-}
 {-# LANGUAGE ImplicitParams #-}
+{-# LANGUAGE DeriveAnyClass #-}
 {-# LANGUAGE CPP #-}
 
 #if __GLASGOW_HASKELL__ >= 980
@@ -40,11 +41,11 @@ import System.IO.Unsafe
 
 -- | This is the 'Exception' thrown by 'todo', 'TODO' and 'todoIO'.
 data TodoException = TodoExceptionWithLocation String
-  deriving (Show, Typeable)
+  deriving (Typeable, Exception)
 
-instance Exception TodoException where
-  displayException (TodoExceptionWithLocation loc)
-    = showString todoMessage $ showChar '\n' $ showString loc ""
+instance Show TodoException where
+  showsPrec _ (TodoExceptionWithLocation loc)
+    = showString todoMessage . showChar '\n' . showString loc
 
 -- | This lets us discard the location information in a TodoException
 pattern TodoException :: TodoException
@@ -53,11 +54,11 @@ pattern TodoException <- TodoExceptionWithLocation _ where
 
 -- | This is the 'Exception' thrown by 'unimplmented', 'Unimplemented', and 'unimplementedIO'.
 data UnimplementedException = UnimplementedExceptionWithLocation String
-  deriving (Show, Typeable)
+  deriving (Typeable, Exception)
 
-instance Exception UnimplementedException where
-  displayException (UnimplementedExceptionWithLocation loc)
-    = showString unimplementedMessage $ showChar '\n' $ showString loc ""
+instance Show UnimplementedException where
+  showsPrec _ (UnimplementedExceptionWithLocation loc)
+    = showString unimplementedMessage . showChar '\n' . showString loc
 
 pattern UnimplementedException :: UnimplementedException
 pattern UnimplementedException <- UnimplementedExceptionWithLocation _ where
@@ -134,7 +135,7 @@ implemented, but where the resulting violation is actually intended.
 -}
 
 unimplemented :: forall (r :: RuntimeRep) (a :: TYPE r). HasCallStack => a
-unimplemented = raise# (withCallStack TodoExceptionWithLocation ?callStack)
+unimplemented = raise# (withCallStack UnimplementedExceptionWithLocation ?callStack)
 
 {- | 'unimplementedIO' indicates that the method is unimplemented, but it lives in IO, and so only throws when actually run, rather
 than when it is constructed. Unlike 'todoIO' it does not provide a compile-time warning, as it is expected that this _may_ remain in
