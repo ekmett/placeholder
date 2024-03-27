@@ -32,3 +32,12 @@ library
   import: base
   hs-source-dirs: src
   exposed-modules: Control.Placeholder
+
+test-suite placeholder-test
+  import: base
+  type: exitcode-stdio-1.0
+  main-is:
+    Test.hs
+  hs-source-dirs:
+    test
+  build-depends: placeholder, tasty >= 1.2, tasty-hunit >= 0.10.0

@@ -19,3 +19,4 @@ jobs:
       with:
         ghc-version: ${{ matrix.ghc }}
     - run: cabal new-build all
+    - run: cabal new-test --test-option=--color=always --test-show-details=always test:placeholder-test
