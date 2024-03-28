@@ -14,6 +14,9 @@
 #define WARNING_IN_XTODO WARNING
 #endif
 
+{- | The 'Control.Placeholder' module implements various functions to indicate 
+     unfinished or generally unimplemented code 
+-}
 module Control.Placeholder
   (
   -- * Combinators
@@ -52,7 +55,7 @@ pattern TodoException :: TodoException
 pattern TodoException <- TodoExceptionWithLocation _ where
   TodoException = TodoExceptionWithLocation missingLocation
 
--- | This is the 'Exception' thrown by 'unimplmented', 'Unimplemented', and 'unimplementedIO'.
+-- | This is the 'Exception' thrown by 'unimplemented', 'Unimplemented', and 'unimplementedIO'.
 data UnimplementedException = UnimplementedExceptionWithLocation String
   deriving (Typeable, Exception)
 
@@ -72,7 +75,7 @@ withCallStack f stk = unsafeDupablePerformIO $ do
     implicitParamCallStack = prettyCallStackLines stk
     ccsCallStack = showCCSStack ccsStack
     stack = intercalate "\n" $ implicitParamCallStack ++ ccsCallStack
-  return $ toException (f stack)
+  pure $ toException (f stack)
 
 {- | 'todo' indicates unfinished code.
 
@@ -101,11 +104,11 @@ superComplexFunction 'Nothing' = 'pure' 42
 superComplexFunction ('Just' a) = 'todo'
 @
 -}
-todo :: forall (r :: RuntimeRep) (a :: TYPE r). HasCallStack => a
+todo :: forall {r :: RuntimeRep} (a :: TYPE r). HasCallStack => a
 todo = raise# (withCallStack TodoExceptionWithLocation ?callStack)
 {-# WARNING_IN_XTODO todo "'todo' left in code" #-}
 
-{- | 'todoIO' indicates unfinished code that should live in the IO monad.
+{- | 'todoIO' indicates unfinished code that lives in the IO monad.
 
 It should be used similarly to how 'throwIO' should be used rather than 'throw' in IO
 to throw at the time the IO action is run rather than at the time it is created.
@@ -130,11 +133,11 @@ pattern TODO <- (raise# (withCallStack TodoExceptionWithLocation ?callStack) -> 
 {-# COMPLETE TODO #-}
 
 {- | 'unimplemented' indicates that the relevant code is unimplemented. Unlike 'todo', it is expected that this _may_ remain in code
-long term, and so no warning is supplied. Usecases might include places where a typeclass would theoretically require a member to be
+long term, and so no warning is supplied. Use cases might include places where a typeclass would theoretically require a member to be
 implemented, but where the resulting violation is actually intended.
 -}
 
-unimplemented :: forall (r :: RuntimeRep) (a :: TYPE r). HasCallStack => a
+unimplemented :: forall {r :: RuntimeRep} (a :: TYPE r). HasCallStack => a
 unimplemented = raise# (withCallStack UnimplementedExceptionWithLocation ?callStack)
 
 {- | 'unimplementedIO' indicates that the method is unimplemented, but it lives in IO, and so only throws when actually run, rather
