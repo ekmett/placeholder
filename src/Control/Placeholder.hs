@@ -6,6 +6,7 @@
 {-# LANGUAGE RankNTypes #-}
 {-# LANGUAGE ImplicitParams #-}
 {-# LANGUAGE DeriveAnyClass #-}
+{-# LANGUAGE Trustworthy #-}
 {-# LANGUAGE CPP #-}
 
 #if __GLASGOW_HASKELL__ >= 980
@@ -40,7 +41,7 @@ import GHC.Types (IO(IO))
 import System.IO.Unsafe
 
 -- | This is the 'Exception' thrown by 'todo', 'TODO' and 'todoIO'.
-data TodoException = TodoExceptionWithLocation String
+newtype TodoException = TodoExceptionWithLocation String
   deriving (Typeable, Exception)
 
 instance Show TodoException where
@@ -53,7 +54,7 @@ pattern TodoException <- TodoExceptionWithLocation _ where
   TodoException = TodoExceptionWithLocation missingLocation
 
 -- | This is the 'Exception' thrown by 'unimplmented', 'Unimplemented', and 'unimplementedIO'.
-data UnimplementedException = UnimplementedExceptionWithLocation String
+newtype UnimplementedException = UnimplementedExceptionWithLocation String
   deriving (Typeable, Exception)
 
 instance Show UnimplementedException where
