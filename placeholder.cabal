@@ -2,7 +2,7 @@ cabal-version: 3.4
 name: placeholder
 version: 0
 synopsis: placeholder definitions for TODO and unimplemented
-description: placeholder definitions for TODO and unimplemented
+description: placeholder definitions for TODO and unimplemented code
 homepage: https://github.com/ekmett/placeholder
 license: BSD-2-Clause OR Apache-2.0
 license-file: LICENSE.md
@@ -13,9 +13,7 @@ stability: experimental
 category: Control
 build-type: Simple
 tested-with: GHC ==9.4.8 || ==9.6.4 || ==9.8.1
-extra-doc-files:
-  README.md,
-  CHANGELOG.md
+extra-doc-files: README.md, CHANGELOG.md
 
 source-repository head
   type: git
@@ -29,14 +27,17 @@ common base
     -Wredundant-constraints -Widentities
     -Wno-simplifiable-class-constraints
 
+common test
+  import: base
+  build-depends: placeholder, tasty >= 1.2, tasty-hunit >= 0.10.0
+  hs-source-dirs: t
+
 library
   import: base
   hs-source-dirs: src
   exposed-modules: Control.Placeholder
 
 test-suite placeholder-test
-  import: base
+  import: test
   type: exitcode-stdio-1.0
   main-is: Test.hs
-  hs-source-dirs: t
-  build-depends: placeholder, tasty >= 1.2, tasty-hunit >= 0.10.0

@@ -1,12 +1,12 @@
+{-# LANGUAGE ScopedTypeVariables #-}
 {-# OPTIONS_GHC -Wno-deprecations #-}
 
+import Control.Exception
+import Control.Monad (when)
+import Control.Placeholder
+import Data.List
 import Test.Tasty
 import Test.Tasty.HUnit
-
-import Control.Exception
-import Control.Placeholder
-
-import Data.List
 
 main :: IO ()
 main = defaultMain tests
@@ -18,27 +18,33 @@ tests = testGroup " All tests" [
 
 basic :: TestTree
 basic = testGroup "Basic"  [
-    testCase "todo" $ todoTest
+    testCase "todo" todoTest
+  , testCase "unimplementedTest" unimplementedTest
   ]
 
 todoTest :: IO ()
 todoTest = do
-  result <- try (evaluate $ todo) :: IO (Either TodoException Int)
-  case result of
-    Left ex -> do
-        let msg = show ex
-        assertBool ("unexpected exception message format: " ++ msg) $
-           all (flip isInfixOf msg) [ -- --enable-profiling disabled
-               "Control.Placeholder.todo: not yet implemented"
-             , "t/Test.hs:26:29"
-             ] ||
-           all (flip isInfixOf msg) [ -- --enable-profiling enabled
-               "Control.Placeholder.todo: not yet implemented",
-               "CallStack (from HasCallStack):",
-                  "todo, called at t/Test.hs:26:29 in main:Main",
-               "CallStack (from -prof):",
-                  "Control.Placeholder.todo (src/Control/Placeholder.hs:116:1-66)",
-                  "Main.todoTest (t/Test.hs:(25,1)-(45,36))",
-                  "Main.CAF (<entire-module>)"
-             ]
-    _ -> assertBool "todo (1)" False
+  Left (ex :: TodoException) <- try (evaluate todo)
+  let msg = show ex
+  assertBool ("unexpected message: " ++ msg)
+     $ "Control.Placeholder.todo: not yet implemented" `isPrefixOf` msg
+  let has x = x `isInfixOf` msg
+  assertBool ("unexpected HasCallStack format: " ++ msg) $
+    all has [
+      "CallStack (from HasCallStack):"
+    , "todo, called at t/Test.hs:27:47 in main:Main"
+    ]
+  when (has "CallStack (from -prof)") $ --enable-profiling enabled
+    assertBool ("unexpected -prof stack format: " ++ msg) $
+      all has [
+        "Control.Placeholder.todo (src/Control/Placeholder.hs:116:1-66)"
+      , "Main.todoTest (t/Test.hs:(26,1)-(43,7))"
+      , "Main.CAF (<entire-module>)"
+      ]
+
+unimplementedTest :: IO ()
+unimplementedTest = do
+  Left (ex :: UnimplementedException) <- try (evaluate unimplemented)
+  let msg = show ex
+  assertBool ("unexpected message: " ++ msg)
+    $ "Control.Placeholder.unimplemented: unimplemented" `isPrefixOf` msg
