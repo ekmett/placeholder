@@ -12,8 +12,10 @@ copyright: Copyright (c) 2024 Edward Kmett
 stability: experimental
 category: Control
 build-type: Simple
-tested-with: GHC ==9.4.8 || ==9.6.4 || ==9.8.1
 extra-doc-files: README.md, CHANGELOG.md
+tested-with: GHC == 9.4.8
+              || == 9.6.4
+              || == 9.8.1
 
 source-repository head
   type: git
@@ -21,7 +23,9 @@ source-repository head
 
 common base
   default-language: Haskell2010
-  build-depends: base >= 4.14 && < 5, ghc-prim
+  build-depends:
+    base >= 4.14 && < 5,
+    ghc-prim
   ghc-options:
     -Wall -Wincomplete-uni-patterns -Wincomplete-record-updates
     -Wredundant-constraints -Widentities
@@ -29,8 +33,11 @@ common base
 
 common test
   import: base
-  build-depends: placeholder, tasty >= 1.2, tasty-hunit >= 0.10.0
   hs-source-dirs: t
+  build-depends:
+    placeholder,
+    tasty >= 1.2,
+    tasty-hunit >= 0.10.0
 
 library
   import: base
