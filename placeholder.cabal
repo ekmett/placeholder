@@ -35,6 +35,7 @@ common test
   import: base
   hs-source-dirs: t
   build-depends:
+    filepath >= 1.4,
     placeholder,
     tasty >= 1.2,
     tasty-hunit >= 0.10.0

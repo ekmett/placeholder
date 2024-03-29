@@ -1,12 +1,12 @@
 name: haskell ci
-on: 
+on:
   push:
   pull_request:
   workflow_dispatch:
 jobs:
   generate-matrix:
     name: "Generate matrix from cabal"
-    outputs: 
+    outputs:
       matrix: ${{ steps.set-matrix.outputs.matrix }}
     runs-on: ubuntu-latest
     steps:
@@ -17,6 +17,7 @@ jobs:
           cabal-file: placeholder.cabal
           ubuntu-version: latest
           macos-version: latest
+          windows-version: latest
           version: 0.1.7.0
   tests:
     name: ${{ matrix.ghc }} on ${{ matrix.os }}
@@ -25,7 +26,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix: ${{ fromJSON(needs.generate-matrix.outputs.matrix) }}
-    steps: 
+    steps:
       - uses: actions/checkout@v4
       - uses: haskell-actions/setup@v2
         id: setup-haskell
