@@ -1,14 +1,23 @@
-{-# LANGUAGE DataKinds #-}
-{-# LANGUAGE PolyKinds #-}
-{-# LANGUAGE ViewPatterns #-}
-{-# LANGUAGE PatternSynonyms #-}
-{-# LANGUAGE MagicHash #-}
-{-# LANGUAGE RankNTypes #-}
-{-# LANGUAGE ImplicitParams #-}
-{-# LANGUAGE DeriveAnyClass #-}
-{-# LANGUAGE Trustworthy #-}
 {-# LANGUAGE BlockArguments #-}
 {-# LANGUAGE CPP #-}
+{-# LANGUAGE DataKinds #-}
+{-# LANGUAGE DeriveAnyClass #-}
+{-# LANGUAGE ImplicitParams #-}
+{-# LANGUAGE MagicHash #-}
+{-# LANGUAGE PatternSynonyms #-}
+{-# LANGUAGE PolyKinds #-}
+{-# LANGUAGE RankNTypes #-}
+{-# LANGUAGE Trustworthy #-}
+{-# LANGUAGE ViewPatterns #-}
+
+-- |
+-- Copyright  : (c) Edward Kmett 2024
+-- License    : BSD-2-Clause OR Apache-2.0
+-- Maintainer : Edward Kmett <ekmett@gmail.com>
+-- Stability  : experimental
+-- Portability: non-portable
+--
+-- Various functions to indicate unfinished or generally unimplemented code 
 
 #if __GLASGOW_HASKELL__ >= 980
 #define WARNING_IN_XTODO WARNING in "x-todo"
@@ -16,9 +25,6 @@
 #define WARNING_IN_XTODO WARNING
 #endif
 
-{- | The 'Control.Placeholder' module implements various functions to indicate 
-     unfinished or generally unimplemented code 
--}
 module Control.Placeholder
   (
   -- * Combinators
