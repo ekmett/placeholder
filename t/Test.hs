@@ -12,14 +12,14 @@ main :: IO ()
 main = defaultMain tests
 
 tests :: TestTree
-tests = testGroup " All tests" [
+tests = testGroup "All tests" [
     basic
   ]
 
 basic :: TestTree
 basic = testGroup "Basic"  [
     testCase "todo" todoTest
-  , testCase "unimplementedTest" unimplementedTest
+  , testCase "unimplemented" unimplementedTest
   ]
 
 todoTest :: IO ()
