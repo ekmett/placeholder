@@ -30,7 +30,7 @@ todoTest = do
         assertBool ("unexpected exception message format: " ++ msg) $
            all (flip isInfixOf msg) [ -- --enable-profiling disabled
                "Control.Placeholder.todo: not yet implemented"
-             , "test/Test.hs:26:29"
+             , "t/Test.hs:26:29"
              ] ||
            all (flip isInfixOf msg) [ -- --enable-profiling enabled
                "Control.Placeholder.todo: not yet implemented",
