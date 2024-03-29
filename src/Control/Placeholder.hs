@@ -7,6 +7,7 @@
 {-# LANGUAGE ImplicitParams #-}
 {-# LANGUAGE DeriveAnyClass #-}
 {-# LANGUAGE Trustworthy #-}
+{-# LANGUAGE BlockArguments #-}
 {-# LANGUAGE CPP #-}
 
 #if __GLASGOW_HASKELL__ >= 980
@@ -15,6 +16,9 @@
 #define WARNING_IN_XTODO WARNING
 #endif
 
+{- | The 'Control.Placeholder' module implements various functions to indicate 
+     unfinished or generally unimplemented code 
+-}
 module Control.Placeholder
   (
   -- * Combinators
@@ -53,7 +57,7 @@ pattern TodoException :: TodoException
 pattern TodoException <- TodoExceptionWithLocation _ where
   TodoException = TodoExceptionWithLocation missingLocation
 
--- | This is the 'Exception' thrown by 'unimplmented', 'Unimplemented', and 'unimplementedIO'.
+-- | This is the 'Exception' thrown by 'unimplemented', 'Unimplemented', and 'unimplementedIO'.
 newtype UnimplementedException = UnimplementedExceptionWithLocation String
   deriving (Typeable, Exception)
 
@@ -67,13 +71,13 @@ pattern UnimplementedException <- UnimplementedExceptionWithLocation _ where
 
 -- | robust retrieval of the current callstack suitable for custom exception types
 withCallStack :: Exception a => (String -> a) -> CallStack -> SomeException
-withCallStack f stk = unsafeDupablePerformIO $ do
+withCallStack f stk = unsafeDupablePerformIO do
   ccsStack <- currentCallStack
   let
     implicitParamCallStack = prettyCallStackLines stk
     ccsCallStack = showCCSStack ccsStack
     stack = intercalate "\n" $ implicitParamCallStack ++ ccsCallStack
-  return $ toException (f stack)
+  pure $ toException $ f stack
 
 {- | 'todo' indicates unfinished code.
 
@@ -102,18 +106,18 @@ superComplexFunction 'Nothing' = 'pure' 42
 superComplexFunction ('Just' a) = 'todo'
 @
 -}
-todo :: forall (r :: RuntimeRep) (a :: TYPE r). HasCallStack => a
-todo = raise# (withCallStack TodoExceptionWithLocation ?callStack)
+todo :: forall {r :: RuntimeRep} (a :: TYPE r). HasCallStack => a
+todo = raise# $ withCallStack TodoExceptionWithLocation ?callStack
 {-# WARNING_IN_XTODO todo "'todo' left in code" #-}
 
-{- | 'todoIO' indicates unfinished code that should live in the IO monad.
+{- | 'todoIO' indicates unfinished code that lives in the IO monad.
 
 It should be used similarly to how 'throwIO' should be used rather than 'throw' in IO
 to throw at the time the IO action is run rather than at the time it is created.
 
 -}
 todoIO :: HasCallStack => IO a
-todoIO = IO (raiseIO# (withCallStack TodoExceptionWithLocation ?callStack))
+todoIO = IO $ raiseIO# $ withCallStack TodoExceptionWithLocation ?callStack
 {-# WARNING_IN_XTODO todoIO "'todoIO' left in code" #-}
 
 {- | 'TODO' indicates unfinished code or an unfinished pattern match
@@ -126,17 +130,17 @@ There remain some circumstances where you can only use 'todo', however, they ari
 -}
 pattern TODO :: HasCallStack => () => a
 pattern TODO <- (raise# (withCallStack TodoExceptionWithLocation ?callStack) -> _unused) where
-  TODO = raise# (withCallStack TodoExceptionWithLocation ?callStack)
+  TODO = raise# $ withCallStack TodoExceptionWithLocation ?callStack
 {-# WARNING_IN_XTODO TODO "'TODO' left in code" #-}
 {-# COMPLETE TODO #-}
 
 {- | 'unimplemented' indicates that the relevant code is unimplemented. Unlike 'todo', it is expected that this _may_ remain in code
-long term, and so no warning is supplied. Usecases might include places where a typeclass would theoretically require a member to be
+long term, and so no warning is supplied. Use cases might include places where a typeclass would theoretically require a member to be
 implemented, but where the resulting violation is actually intended.
 -}
 
-unimplemented :: forall (r :: RuntimeRep) (a :: TYPE r). HasCallStack => a
-unimplemented = raise# (withCallStack UnimplementedExceptionWithLocation ?callStack)
+unimplemented :: forall {r :: RuntimeRep} (a :: TYPE r). HasCallStack => a
+unimplemented = raise# $ withCallStack UnimplementedExceptionWithLocation ?callStack
 
 {- | 'unimplementedIO' indicates that the method is unimplemented, but it lives in IO, and so only throws when actually run, rather
 than when it is constructed. Unlike 'todoIO' it does not provide a compile-time warning, as it is expected that this _may_ remain in
@@ -145,7 +149,7 @@ code long term.
 -}
 
 unimplementedIO :: HasCallStack => IO a
-unimplementedIO = IO (raiseIO# (withCallStack UnimplementedExceptionWithLocation ?callStack))
+unimplementedIO = IO $ raiseIO# $ withCallStack UnimplementedExceptionWithLocation ?callStack
 
 {- | 'Unimplemented' can be used in most circumstances 'unimplemented' can, but it can also be used in pattern position to indicate cases
 haven't been considered yet. Unlike 'TODO' it does not provide a compile-time warning, as it is expected that this _may_ remain in code long term.
@@ -153,7 +157,7 @@ haven't been considered yet. Unlike 'TODO' it does not provide a compile-time wa
 -}
 pattern Unimplemented :: HasCallStack => () => a
 pattern Unimplemented <- (raise# (withCallStack UnimplementedExceptionWithLocation ?callStack) -> _unused) where
-  Unimplemented = raise# (withCallStack UnimplementedExceptionWithLocation ?callStack)
+  Unimplemented = raise# $ withCallStack UnimplementedExceptionWithLocation ?callStack
 {-# COMPLETE Unimplemented #-}
 
 missingLocation :: String
