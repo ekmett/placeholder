@@ -37,8 +37,6 @@ library
 test-suite placeholder-test
   import: base
   type: exitcode-stdio-1.0
-  main-is:
-    Test.hs
-  hs-source-dirs:
-    test
+  main-is: Test.hs
+  hs-source-dirs: t
   build-depends: placeholder, tasty >= 1.2, tasty-hunit >= 0.10.0
