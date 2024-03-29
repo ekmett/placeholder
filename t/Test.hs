@@ -27,8 +27,7 @@ todoTest = do
   case result of
     Left ex -> do
         let msg = show ex
-        putStrLn msg
-        assertBool "todo(1)" $
+        assertBool ("unexpected exception message format: " ++ msg) $
            all (flip isInfixOf msg) [ -- --enable-profiling disabled
                "Control.Placeholder.todo: not yet implemented"
              , "test/Test.hs:26:29"
