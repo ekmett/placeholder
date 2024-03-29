@@ -31,5 +31,6 @@ jobs:
         id: setup-haskell
         with:
           ghc-version: ${{ matrix.ghc }}
-      - run: cabal new-build all
-      - run: cabal new-test --test-option=--color=always --test-show-details=always test:placeholder-test
+      - run: cabal build all
+      - run: cabal test --test-option=--color=always --test-show-details=always test:placeholder-test
+      - run: cabal test --enable-profiling --test-option=--color=always --test-show-details=always test:placeholder-test
