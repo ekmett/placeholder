@@ -17,6 +17,7 @@ jobs:
           cabal-file: placeholder.cabal
           ubuntu-version: latest
           macos-version: latest
+          windows-version: latest
           version: 0.1.7.0
   tests:
     name: ${{ matrix.ghc }} on ${{ matrix.os }}

@@ -5,6 +5,7 @@ import Control.Exception
 import Control.Monad (when)
 import Control.Placeholder
 import Data.List
+import System.FilePath((</>))
 import Test.Tasty
 import Test.Tasty.HUnit
 
@@ -32,13 +33,13 @@ todoTest = do
   assertBool ("unexpected HasCallStack format: " ++ msg) $
     all has [
       "CallStack (from HasCallStack):"
-    , "todo, called at t/Test.hs:27:47 in main:Main"
+    , "todo, called at t" </> "Test.hs:28:47 in main:Main"
     ]
   when (has "CallStack (from -prof)") $ --enable-profiling enabled
     assertBool ("unexpected -prof stack format: " ++ msg) $
       all has [
-        "Control.Placeholder.todo (src/Control/Placeholder.hs:116:1-66)"
-      , "Main.todoTest (t/Test.hs:(26,1)-(43,7))"
+        "Control.Placeholder.todo (src" </> "Control" </> "Placeholder.hs:116:1-66)"
+      , "Main.todoTest (t" </> "Test.hs:(27,1)-(44,7))"
       , "Main.CAF (<entire-module>)"
       ]
 
