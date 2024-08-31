@@ -33,12 +33,12 @@ todoTest = do
   assertBool ("unexpected HasCallStack format: " ++ msg) $
     all has [
       "CallStack (from HasCallStack):"
-    , "todo, called at t" </> "Test.hs:28:47 in main:Main"
+    , "todo, called at t" </> "Test.hs:28:47 in placeholder-0-inplace-placeholder-test:Main"
     ]
   when (has "CallStack (from -prof)") $ --enable-profiling enabled
     assertBool ("unexpected -prof stack format: " ++ msg) $
       all has [
-        "Control.Placeholder.todo (src" </> "Control" </> "Placeholder.hs:116:1-66)"
+        "Control.Placeholder.todo (src" </> "Control" </> "Placeholder.hs:120:1-66)"
       , "Main.todoTest (t" </> "Test.hs:(27,1)-(44,7))"
       , "Main.CAF (<entire-module>)"
       ]

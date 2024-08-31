@@ -111,6 +111,10 @@ superComplexFunction 'Nothing' = 'pure' 42
 -- but the 'Just' case is super complicated, so we leave it as 'todo' for now
 superComplexFunction ('Just' a) = 'todo'
 @
+
+==== __Representation Polymorphism__
+
+'todo', in contrast to 'TODO', is fully representation polymorphic
 -}
 todo :: forall {r :: RuntimeRep} (a :: TYPE r). HasCallStack => a
 todo = raise# $ withCallStack TodoExceptionWithLocation ?callStack
@@ -133,6 +137,47 @@ to indicate that there are cases you haven't considered.
 
 There remain some circumstances where you can only use 'todo', however, they arise when using this in a "PolyKinded" situation.
 
+This pattern synonym is marked @COMPLETE@, implying that every match after matching on 'TODO'
+will /emit a redundant pattern match warning/. Adding new options to your datatype, similarly
+to how wildcard patterns (patterns starting with an underscore) work, will /not cause any warnings or errors/.
+
+==== __Examples__
+
+Since the pattern match is strict, even if the branch itself does not evaluate to bottom, matching on
+'TODO' will.
+
+@
+>>> x = []
+>>> case x of
+...   (x : _) -> x
+...   'TODO' -> 42
+*** Exception: Control.Placeholder.todo: not yet implemented
+@
+
+As usual, this behaviour can be reversed by using a @~@ in front of 'TODO' in pattern position.
+
+@
+>>> x = []
+>>> case x of
+...   (x : _) -> x
+...   ~'TODO' -> 42
+42
+@
+
+In most situations, 'TODO' can be used just like 'todo', where the above is equivalent to the below
+
+@
+>>> y :: 'Data.Int.Int' = 'todo'
+>>> x :: 'Data.Int.Int' = 'TODO'
+@
+
+
+==== __Representation Polymorphism__
+
+Mind that pattern synonyms may not be representation polymorphic, hence, if you need something
+that can be used with some kind other than 'Data.Kind.Type', you have to use 'todo'. For example,
+'TODO' cannot stand instead of a pattern match on an @'GHC.Exts.Int#' :: 'TYPE' 'GHC.Exts.IntRep'@
+or as a placeholder for a @'GHC.Exts.ByteArray#' :: 'GHC.Exts.UnliftedType'@
 -}
 pattern TODO :: HasCallStack => () => a
 pattern TODO <- (raise# (withCallStack TodoExceptionWithLocation ?callStack) -> _unused) where
