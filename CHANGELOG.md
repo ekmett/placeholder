@@ -1,5 +1,9 @@
 # Revision history for placeholder
 
-## 0 -- 2024-03-25
+## [next]
+
+* Minor documentation flow improvements
+
+## 0 -- 2024-09-11
 
 * First version. Released on an unsuspecting world.

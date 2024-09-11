@@ -90,11 +90,16 @@ withCallStack f stk = unsafeDupablePerformIO do
 It is to be used whenever you want to indicate that you are missing a part of
 the implementation and want to fill that in later.
 
-The main difference to other alternatives like typed holes and 'undefined'
-or 'error' is, this does not throw an error but only emits a warning.
+The main difference to other alternatives like 'undefined'
+or 'error' is this also emits a warning at compile time.
 
-Similarly to 'undefined', 'error' and typed holes, this will throw an error if
-it is evaluated at runtime which can only be caught in 'IO'.
+Similarly to 'undefined' and 'error', this will throw an error if
+it is evaluated at runtime which can only be caught in 'IO'. Unlike typed holes,
+at least without @-fdefer-typed-holes@ enabled, compilation is allowed to proceed
+and the program can be run.
+
+Variants such as 'TODO' and 'todoIO' allow usage in patterns and offer more control
+over when the exception is thrown when this code is encountered at runtime.
 
 This is intended to *never* stay in code but exists purely for signifying
 "work in progress" code.
