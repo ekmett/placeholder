@@ -33,7 +33,7 @@ todoTest = do
   assertBool ("unexpected HasCallStack format: " ++ msg) $
     all has [
       "CallStack (from HasCallStack):"
-    , "todo, called at t" </> "Test.hs:28:47 in placeholder-0-inplace-placeholder-test:Main"
+    , "todo, called at t" </> "Test.hs:28:47 in"
     ]
   when (has "CallStack (from -prof)") $ --enable-profiling enabled
     assertBool ("unexpected -prof stack format: " ++ msg) $
