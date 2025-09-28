@@ -36,9 +36,9 @@ todoTest = do
     , "todo, called at t" </> "Test.hs:28:47 in"
     ]
   when (has "CallStack (from -prof)") $ --enable-profiling enabled
-    assertBool ("unexpected -prof stack format: " ++ msg) $
+    assertBool ("unexpected -prof stack format: \n" ++ msg) $
       all has [
-        "Control.Placeholder.todo (src" </> "Control" </> "Placeholder.hs:120:1-66)"
+        "Control.Placeholder.todo (src" </> "Control" </> "Placeholder.hs:128:1-66)"
       , "Main.todoTest (t" </> "Test.hs:(27,1)-(44,7))"
       , "Main.CAF (<entire-module>)"
       ]

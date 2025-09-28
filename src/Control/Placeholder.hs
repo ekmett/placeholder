@@ -81,7 +81,10 @@ withCallStack f stk = unsafeDupablePerformIO do
   ccsStack <- currentCallStack
   let
     implicitParamCallStack = prettyCallStackLines stk
-    ccsCallStack = showCCSStack ccsStack
+    ccsCallStack
+      | [] <- ccsStack = []
+      | otherwise = "CallStack (from -prof):" : map ("  " ++) (reverse ccsStack)
+
     stack = intercalate "\n" $ implicitParamCallStack ++ ccsCallStack
   pure $ toException $ f stack
 

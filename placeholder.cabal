@@ -1,6 +1,6 @@
 cabal-version: 3.4
 name: placeholder
-version: 0
+version: 0.0.1
 synopsis: placeholder definitions for TODO and unimplemented
 description: placeholder definitions for TODO and unimplemented code
 homepage: https://github.com/ekmett/placeholder
@@ -17,6 +17,7 @@ tested-with: GHC == 9.4.8
               || == 9.6.6
               || == 9.8.2
               || == 9.10.1
+              || == 9.12.1
 
 source-repository head
   type: git
